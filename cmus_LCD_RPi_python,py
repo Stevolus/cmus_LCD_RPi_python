@@ -1,0 +1,34 @@
+#!/usr/local/bin/python3
+
+import subprocess
+import time
+
+
+ti = time.gmtime() 
+get_artist = subprocess.check_output("cmus-remote -Q | grep artist | cut -c 12-", shell=True).decode("utf-8")
+get_song = subprocess.check_output("cmus-remote -Q | grep title | cut -c 11-", shell=True).decode("utf-8")
+get_status = subprocess.check_output("cmus-remote -Q | grep status | cut -c 8-", shell=True).decode("utf-8")
+
+if get_artist == "":
+    artist = "No info found"
+else:
+    artist = print("Artist: " + "".join(get_artist.split()))
+
+
+if get_song == "":
+    song = "No info found"
+else:
+    song = print("Title: " + "".join(get_song.split()))
+
+
+if get_status == "":
+    status = "Nothing playing..."
+else:
+    status = print("".join(get_status.split()))
+  
+
+artist
+song
+status
+print(time.strftime("%H:%M"))
+
