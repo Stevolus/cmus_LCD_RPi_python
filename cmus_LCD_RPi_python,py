@@ -1,34 +1,38 @@
 #!/usr/local/bin/python3
 
 import subprocess
-import time
 
+def readable_time(secs):
+    mins, secs = divmod(secs, 60)
+    hours, mins = divmod(mins, 60)
+    return '%02d:%02d' % (mins, secs)
 
-ti = time.gmtime() 
-get_artist = subprocess.check_output("cmus-remote -Q | grep artist | cut -c 12-", shell=True).decode("utf-8")
-get_song = subprocess.check_output("cmus-remote -Q | grep title | cut -c 11-", shell=True).decode("utf-8")
-get_status = subprocess.check_output("cmus-remote -Q | grep status | cut -c 8-", shell=True).decode("utf-8")
+get_status = subprocess.check_output("cmus-remote -Q | grep status | cut -c 8-", stdin=None, stderr=None, shell=True).decode("utf-8")
+get_artist = subprocess.check_output("cmus-remote -Q | grep artist | cut -c 12-", stdin=None, stderr=None, shell=True).decode("utf-8")
+get_song = subprocess.check_output("cmus-remote -Q | grep title | cut -c 11-", stdin=None, stderr=None, shell=True).decode("utf-8")
+get_duration = int(subprocess.check_output("cmus-remote -Q | grep duration | cut -c 10-", stdin=None, stderr=None, shell=True).decode("utf-8"))
+get_position = int(subprocess.check_output("cmus-remote -Q | grep position | cut -c 10-", stdin=None, stderr=None, shell=True).decode("utf-8"))
 
-if get_artist == "":
-    artist = "No info found"
-else:
-    artist = print("Artist: " + "".join(get_artist.split()))
-
-
-if get_song == "":
-    song = "No info found"
-else:
-    song = print("Title: " + "".join(get_song.split()))
 
 
 if get_status == "":
-    status = "Nothing playing..."
+    stat = "Nothing playing..."
 else:
-    status = print("".join(get_status.split()))
-  
+    stat = (get_status)
 
-artist
-song
-status
-print(time.strftime("%H:%M"))
+if get_artist == "":
+    artist = "Artist: No info..."
+else:
+    artist = ("Artist: "+get_artist)
 
+if get_song == "":
+    song = "Title: No info..."
+else:
+    song = ("Title: "+get_song)
+
+
+
+print(stat.replace('\n', ""))
+print(artist.replace('\n', ""))
+print(song.replace('\n', ""))
+print(readable_time(get_position),"/", (readable_time(get_duration)))
